@@ -80,12 +80,86 @@ for (let i = 0; i <= 62; i += 1) {
 }
 container.append(text, keyboard);
 body.append(container);
+const shiftableKeys = document.querySelectorAll('[data-name="shiftable"]');
 
-const k = document.querySelectorAll('.key');
+const shiftAllKeys = (lang) => {
+	const shifted = lang === 'en' ? keysEngShifted : keysRuShifted;
+	shiftableKeys.forEach((key, i) => {
+		key.innerHTML = shifted[i];
+	});
+};
+
+const unshiftAllKeys = (lang) => {
+	const unshifted = lang === 'en' ? keysEng : keysRu;
+	shiftableKeys.forEach((key, i) => {
+		key.innerHTML = unshifted[i];
+	});
+};
+
+const toggleCaps = () => {
+	const status = keyboard.dataset.caps;
+	if (status === 'false') {
+		shiftableKeys.forEach((key) => {
+			key.innerHTML = key.innerText.toUpperCase();
+		});
+		keyboard.dataset.caps = 'true';
+	} else {
+		shiftableKeys.forEach((key) => {
+			key.innerHTML = key.innerText.toLowerCase();
+		});
+		keyboard.dataset.caps = 'false';
+	}
+};
+
+const shiftKeys = document.querySelectorAll('[data-name="shift"]');
+shiftKeys.forEach((key) => {
+	key.addEventListener('mousedown', () => {
+		const { lang } = keyboard.dataset;
+		shiftAllKeys(lang);
+	});
+	key.addEventListener('mouseup', () => {
+		const { lang } = keyboard.dataset;
+		unshiftAllKeys(lang);
+	});
+});
+
+const capsKey = document.querySelector('[data-name="caps"]');
+capsKey.addEventListener('click', () => {
+	toggleCaps();
+});
+
 const textArea = document.querySelector('.text');
-k.forEach((key) => {
+shiftableKeys.forEach((key) => {
 	key.addEventListener('click', () => {
 		const buttonText = key.innerText;
 		textArea.innerHTML += buttonText;
+	});
+});
+
+const spaceKey = document.querySelector('[data-name="space"]');
+spaceKey.addEventListener('click', () => {
+	textArea.innerHTML += ' ';
+});
+
+const tabKey = document.querySelector('[data-name="tab"]');
+tabKey.addEventListener('click', () => {
+	textArea.innerHTML += '\t';
+});
+
+const enterKey = document.querySelector('[data-name="enter"]');
+enterKey.addEventListener('click', () => {
+	textArea.innerHTML += '\n';
+});
+
+const bspaceKey = document.querySelector('[data-name="bspace"]');
+bspaceKey.addEventListener('click', () => {
+	const sliced = textArea.innerHTML.substring(0, textArea.innerHTML.length - 1);
+	textArea.innerHTML = sliced;
+});
+
+const arrowKeys = document.querySelectorAll('[data-name="arrow"]');
+arrowKeys.forEach((key) => {
+	key.addEventListener('click', () => {
+		textArea.innerHTML += key.innerHTML;
 	});
 });
