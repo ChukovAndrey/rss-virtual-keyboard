@@ -163,3 +163,37 @@ arrowKeys.forEach((key) => {
 		textArea.innerHTML += key.innerHTML;
 	});
 });
+
+document.addEventListener('keydown', (event) => {
+	const keyPressed = event.key;
+	console.log(keyPressed);
+	const shiftableKey = document.querySelectorAll('[data-name="shiftable"]');
+	shiftableKey.forEach((key) => {
+		if (key.innerHTML === keyPressed) {
+			textArea.innerHTML += key.innerHTML;
+		}
+	});
+	if (keyPressed === 'Shift') {
+		const { lang } = keyboard.dataset;
+		shiftAllKeys(lang);
+	} else if (keyPressed === 'Tab') {
+		textArea.innerHTML += '\t';
+	} else if (keyPressed === ' ') {
+		textArea.innerHTML += ' ';
+	} else if (keyPressed === 'Enter') {
+		textArea.innerHTML += '\n';
+	} else if (keyPressed === 'Backspace') {
+		const sliced = textArea.innerHTML.substring(0, textArea.innerHTML.length - 1);
+		textArea.innerHTML = sliced;
+	} else if (keyPressed === 'CapsLock') {
+		toggleCaps();
+	} else if (keyPressed === 'ArrowLeft') {
+		textArea.innerHTML += '◄';
+	} else if (keyPressed === 'ArrowRight') {
+		textArea.innerHTML += '►';
+	} else if (keyPressed === 'ArrowUp') {
+		textArea.innerHTML += '▲';
+	} else if (keyPressed === 'ArrowDown') {
+		textArea.innerHTML += '▼';
+	}
+});
