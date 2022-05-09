@@ -226,6 +226,7 @@ document.addEventListener('keydown', (event) => {
   const shiftableKey = document.querySelectorAll('[data-name="shiftable"]');
   shiftableKey.forEach((key) => {
     if (key.innerHTML === keyPressed) {
+			key.classList.add('pressed');
       textArea.innerHTML += key.innerHTML;
     }
   });
@@ -233,25 +234,95 @@ document.addEventListener('keydown', (event) => {
     const { lang } = keyboard.dataset;
     shiftAllKeys(lang);
   } else if (keyPressed === 'Tab') {
+		const tab = document.querySelector('[data-name="tab"]');
+		tab.classList.add('pressed');
     textArea.innerHTML += '\t';
   } else if (keyPressed === ' ') {
+		const space = document.querySelector('[data-name="space"]');
+		space.classList.add('pressed');
     textArea.innerHTML += ' ';
   } else if (keyPressed === 'Enter') {
+		const enter = document.querySelector('[data-name="enter"]');
+		enter.classList.add('pressed');
     textArea.innerHTML += '\n';
   } else if (keyPressed === 'Backspace') {
+		const bspace = document.querySelector('[data-name="bspace"]');
+		bspace.classList.add('pressed');
     const sliced = textArea.innerHTML.substring(0, textArea.innerHTML.length - 1);
     textArea.innerHTML = sliced;
   } else if (keyPressed === 'CapsLock') {
+		const caps = document.querySelector('[data-name="caps"]');
+		caps.classList.add('pressed');
     toggleCaps();
   } else if (keyPressed === 'ArrowLeft') {
+		const arrows = document.querySelectorAll('[data-name="arrow"]');
+		arrows[1].classList.add('pressed');
     textArea.innerHTML += '◄';
   } else if (keyPressed === 'ArrowRight') {
+		const arrows = document.querySelectorAll('[data-name="arrow"]');
+		arrows[3].classList.add('pressed');
     textArea.innerHTML += '►';
   } else if (keyPressed === 'ArrowUp') {
+		const arrows = document.querySelectorAll('[data-name="arrow"]');
+		arrows[0].classList.add('pressed');
     textArea.innerHTML += '▲';
   } else if (keyPressed === 'ArrowDown') {
+		const arrows = document.querySelectorAll('[data-name="arrow"]');
+		arrows[2].classList.add('pressed');
     textArea.innerHTML += '▼';
   } else if (event.ctrlKey && event.altKey) {
     switchLang();
   }
+});
+document.addEventListener('keyup', (event) => {
+	const keyPressed = event.key;
+	// const index = keysEng.indexOf(keyPressed) || keysRu.indexOf(keyPressed);
+	// console.log(`${index}++`);
+	// let myKey;
+	// if (keysEng.indexOf(keyPressed)) {
+	//   myKey = keysEng[keysEng.indexOf(keyPressed)];
+	// } else if (keysRu.indexOf(keyPressed)) {
+	//   myKey = keysRu[keysRu.indexOf(keyPressed)];
+	// } else if (keysEngShifted.indexOf(keyPressed)) {
+	//   myKey = keysEngShifted[keysEngShifted.indexOf(keyPressed)];
+	// } else if (keysRuShifted.indexOf(keyPressed)) {
+	//   myKey = keysRuShifted[keysRuShifted.indexOf(keyPressed)];
+	// }
+	// console.log(keyPressed);
+	const shiftableKey = document.querySelectorAll('[data-name="shiftable"]');
+	shiftableKey.forEach((key) => {
+		if (key.innerHTML === keyPressed) {
+			key.classList.remove('pressed');
+		}
+	});
+	if (keyPressed === 'Shift') {
+		const { lang } = keyboard.dataset;
+	} else if (keyPressed === 'Tab') {
+		const tab = document.querySelector('[data-name="tab"]');
+		tab.classList.remove('pressed');
+	} else if (keyPressed === ' ') {
+		const space = document.querySelector('[data-name="space"]');
+		space.classList.remove('pressed');
+	} else if (keyPressed === 'Enter') {
+		const enter = document.querySelector('[data-name="enter"]');
+		enter.classList.remove('pressed');
+	} else if (keyPressed === 'Backspace') {
+		const bspace = document.querySelector('[data-name="bspace"]');
+		bspace.classList.remove('pressed');
+	} else if (keyPressed === 'CapsLock') {
+		const caps = document.querySelector('[data-name="caps"]');
+		caps.classList.remove('pressed');
+	} else if (keyPressed === 'ArrowLeft') {
+		const arrows = document.querySelectorAll('[data-name="arrow"]');
+		arrows[1].classList.remove('pressed');
+	} else if (keyPressed === 'ArrowRight') {
+		const arrows = document.querySelectorAll('[data-name="arrow"]');
+		arrows[3].classList.remove('pressed');
+	} else if (keyPressed === 'ArrowUp') {
+		const arrows = document.querySelectorAll('[data-name="arrow"]');
+		arrows[0].classList.remove('pressed');
+	} else if (keyPressed === 'ArrowDown') {
+		const arrows = document.querySelectorAll('[data-name="arrow"]');
+		arrows[2].classList.remove('pressed');
+	}
 });
