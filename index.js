@@ -7,6 +7,7 @@ const keyboard = document.createElement('div');
 keyboard.classList.add('keyboard');
 keyboard.dataset.lang = 'en';
 keyboard.dataset.caps = 'false';
+keyboard.dataset.shifted = 'false';
 const keys = ['`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '←',
   'Tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\',
   'Caps', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', "'", 'Enter',
@@ -231,10 +232,10 @@ arrowKeys.forEach((key) => {
 document.addEventListener('keydown', (event) => {
   const keyPressed = event.key;
   let index;
-  if (keyboard.dataset.caps === 'false') {
+  if (keyboard.dataset.shifted === 'false') {
     index = keysEng.indexOf(keyPressed) !== -1 ? keysEng.indexOf(keyPressed)
       : keysRu.indexOf(keyPressed);
-  } else if (keyboard.dataset.caps === 'true') {
+  } else if (keyboard.dataset.shifted === 'true') {
     index = keysEngShifted.indexOf(keyPressed) !== -1 ? keysEngShifted.indexOf(keyPressed)
       : keysRuShifted.indexOf(keyPressed);
   }
@@ -242,9 +243,13 @@ document.addEventListener('keydown', (event) => {
     index = keysEngShifted.indexOf(keyPressed) !== -1 ? keysEngShifted.indexOf(keyPressed)
       : keysRuShifted.indexOf(keyPressed);
   }
-
   const { lang } = keyboard.dataset;
-  const myKey = lang === 'en' ? keysEng[index] : keysRu[index];
+  let myKey;
+  if (keyboard.dataset.shifted === 'false') {
+    myKey = lang === 'en' ? keysEng[index] : keysRu[index];
+  } else if (keyboard.dataset.shifted === 'true') {
+    myKey = lang === 'en' ? keysEngShifted[index] : keysRuShifted[index];
+  }
 
   const shiftableKey = document.querySelectorAll('[data-name="shiftable"]');
   shiftableKey.forEach((key) => {
@@ -261,8 +266,10 @@ document.addEventListener('keydown', (event) => {
       const pressedShift = document.querySelector('[data-side="right"]');
       pressedShift.classList.add('pressed');
     }
+    keyboard.dataset.shifted = 'true';
     shiftAllKeys(lang);
   } else if (keyPressed === 'Tab') {
+    event.preventDefault();
     const tab = document.querySelector('[data-name="tab"]');
     tab.classList.add('pressed');
     textArea.innerHTML += '\t';
@@ -320,6 +327,7 @@ document.addEventListener('keyup', (event) => {
       const pressedShift = document.querySelector('[data-side="right"]');
       pressedShift.classList.remove('pressed');
     }
+    keyboard.dataset.shifted = 'false';
     unshiftAllKeys(lang);
   } else if (keyPressed === 'Tab') {
     const tab = document.querySelector('[data-name="tab"]');
