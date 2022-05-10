@@ -78,7 +78,10 @@ for (let i = 0; i <= 62; i += 1) {
   }
   keyboard.append(button);
 }
-container.append(text, keyboard);
+const subText = document.createElement('div');
+subText.classList.add('subtext');
+subText.innerText = 'Use Ctrl + Alt to switch language';
+container.append(text, keyboard, subText);
 body.append(container);
 
 const shiftableKeys = document.querySelectorAll('[data-name="shiftable"]');
@@ -100,14 +103,26 @@ const unshiftAllKeys = (lang) => {
 const switchLang = () => {
   const { lang } = keyboard.dataset;
   if (lang === 'en') {
-    shiftableKeys.forEach((key, i) => {
-      key.innerHTML = keysRu[i];
-    });
+    if (keyboard.dataset.caps === 'false') {
+      shiftableKeys.forEach((key, i) => {
+        key.innerHTML = keysRu[i];
+      });
+    } else {
+      shiftableKeys.forEach((key, i) => {
+        key.innerHTML = keysRuShifted[i];
+      });
+    }
     keyboard.dataset.lang = 'ru';
   } else {
-    shiftableKeys.forEach((key, i) => {
-      key.innerHTML = keysEng[i];
-    });
+    if (keyboard.dataset.caps === 'false') {
+      shiftableKeys.forEach((key, i) => {
+        key.innerHTML = keysEng[i];
+      });
+    } else {
+      shiftableKeys.forEach((key, i) => {
+        key.innerHTML = keysEngShifted[i];
+      });
+    }
     keyboard.dataset.lang = 'en';
   }
 };
@@ -128,6 +143,11 @@ const toggleCaps = () => {
 };
 
 const shiftKeys = document.querySelectorAll('[data-name="shift"]');
+shiftKeys[0].dataset.side = 'left';
+shiftKeys[1].dataset.side = 'right';
+const controlKeys = document.querySelectorAll('[data-name="ctrl"]');
+controlKeys[0].dataset.side = 'left';
+controlKeys[1].dataset.side = 'right';
 shiftKeys.forEach((key) => {
   key.addEventListener('mousedown', () => {
     const { lang } = keyboard.dataset;
@@ -210,48 +230,123 @@ arrowKeys.forEach((key) => {
 
 document.addEventListener('keydown', (event) => {
   const keyPressed = event.key;
-  // const index = keysEng.indexOf(keyPressed) || keysRu.indexOf(keyPressed);
-  // console.log(`${index}++`);
-  // let myKey;
-  // if (keysEng.indexOf(keyPressed)) {
-  //   myKey = keysEng[keysEng.indexOf(keyPressed)];
-  // } else if (keysRu.indexOf(keyPressed)) {
-  //   myKey = keysRu[keysRu.indexOf(keyPressed)];
-  // } else if (keysEngShifted.indexOf(keyPressed)) {
-  //   myKey = keysEngShifted[keysEngShifted.indexOf(keyPressed)];
-  // } else if (keysRuShifted.indexOf(keyPressed)) {
-  //   myKey = keysRuShifted[keysRuShifted.indexOf(keyPressed)];
-  // }
-  // console.log(keyPressed);
+  let index;
+  if (keyboard.dataset.caps === 'false') {
+    index = keysEng.indexOf(keyPressed) !== -1 ? keysEng.indexOf(keyPressed)
+      : keysRu.indexOf(keyPressed);
+  } else if (keyboard.dataset.caps === 'true') {
+    index = keysEngShifted.indexOf(keyPressed) !== -1 ? keysEngShifted.indexOf(keyPressed)
+      : keysRuShifted.indexOf(keyPressed);
+  }
+  if (keyPressed.toLowerCase() !== keyPressed) {
+    index = keysEngShifted.indexOf(keyPressed) !== -1 ? keysEngShifted.indexOf(keyPressed)
+      : keysRuShifted.indexOf(keyPressed);
+  }
+
+  const { lang } = keyboard.dataset;
+  const myKey = lang === 'en' ? keysEng[index] : keysRu[index];
+
   const shiftableKey = document.querySelectorAll('[data-name="shiftable"]');
   shiftableKey.forEach((key) => {
-    if (key.innerHTML === keyPressed) {
+    if (myKey && key.innerHTML.toLowerCase() === myKey.toLowerCase()) {
+      key.classList.add('pressed');
       textArea.innerHTML += key.innerHTML;
     }
   });
   if (keyPressed === 'Shift') {
-    const { lang } = keyboard.dataset;
+    if (event.location === KeyboardEvent.DOM_KEY_LOCATION_LEFT) {
+      const pressedShift = document.querySelector('[data-side="left"]');
+      pressedShift.classList.add('pressed');
+    } else {
+      const pressedShift = document.querySelector('[data-side="right"]');
+      pressedShift.classList.add('pressed');
+    }
     shiftAllKeys(lang);
   } else if (keyPressed === 'Tab') {
+    const tab = document.querySelector('[data-name="tab"]');
+    tab.classList.add('pressed');
     textArea.innerHTML += '\t';
   } else if (keyPressed === ' ') {
+    const space = document.querySelector('[data-name="space"]');
+    space.classList.add('pressed');
     textArea.innerHTML += ' ';
   } else if (keyPressed === 'Enter') {
+    const enter = document.querySelector('[data-name="enter"]');
+    enter.classList.add('pressed');
     textArea.innerHTML += '\n';
   } else if (keyPressed === 'Backspace') {
+    const bspace = document.querySelector('[data-name="bspace"]');
+    bspace.classList.add('pressed');
     const sliced = textArea.innerHTML.substring(0, textArea.innerHTML.length - 1);
     textArea.innerHTML = sliced;
   } else if (keyPressed === 'CapsLock') {
+    const caps = document.querySelector('[data-name="caps"]');
+    caps.classList.add('pressed');
     toggleCaps();
   } else if (keyPressed === 'ArrowLeft') {
+    const arrows = document.querySelectorAll('[data-name="arrow"]');
+    arrows[1].classList.add('pressed');
     textArea.innerHTML += '◄';
   } else if (keyPressed === 'ArrowRight') {
+    const arrows = document.querySelectorAll('[data-name="arrow"]');
+    arrows[3].classList.add('pressed');
     textArea.innerHTML += '►';
   } else if (keyPressed === 'ArrowUp') {
+    const arrows = document.querySelectorAll('[data-name="arrow"]');
+    arrows[0].classList.add('pressed');
     textArea.innerHTML += '▲';
   } else if (keyPressed === 'ArrowDown') {
+    const arrows = document.querySelectorAll('[data-name="arrow"]');
+    arrows[2].classList.add('pressed');
     textArea.innerHTML += '▼';
   } else if (event.ctrlKey && event.altKey) {
     switchLang();
+  }
+});
+document.addEventListener('keyup', (event) => {
+  const keyPressed = event.key;
+  const { lang } = keyboard.dataset;
+  const shiftableKey = document.querySelectorAll('[data-name="shiftable"]');
+  shiftableKey.forEach((key) => {
+    if (key.innerHTML === keyPressed) {
+      key.classList.remove('pressed');
+    }
+  });
+  if (keyPressed === 'Shift') {
+    if (event.location === KeyboardEvent.DOM_KEY_LOCATION_LEFT) {
+      const pressedShift = document.querySelector('[data-side="left"]');
+      pressedShift.classList.remove('pressed');
+    } else {
+      const pressedShift = document.querySelector('[data-side="right"]');
+      pressedShift.classList.remove('pressed');
+    }
+    unshiftAllKeys(lang);
+  } else if (keyPressed === 'Tab') {
+    const tab = document.querySelector('[data-name="tab"]');
+    tab.classList.remove('pressed');
+  } else if (keyPressed === ' ') {
+    const space = document.querySelector('[data-name="space"]');
+    space.classList.remove('pressed');
+  } else if (keyPressed === 'Enter') {
+    const enter = document.querySelector('[data-name="enter"]');
+    enter.classList.remove('pressed');
+  } else if (keyPressed === 'Backspace') {
+    const bspace = document.querySelector('[data-name="bspace"]');
+    bspace.classList.remove('pressed');
+  } else if (keyPressed === 'CapsLock') {
+    const caps = document.querySelector('[data-name="caps"]');
+    caps.classList.remove('pressed');
+  } else if (keyPressed === 'ArrowLeft') {
+    const arrows = document.querySelectorAll('[data-name="arrow"]');
+    arrows[1].classList.remove('pressed');
+  } else if (keyPressed === 'ArrowRight') {
+    const arrows = document.querySelectorAll('[data-name="arrow"]');
+    arrows[3].classList.remove('pressed');
+  } else if (keyPressed === 'ArrowUp') {
+    const arrows = document.querySelectorAll('[data-name="arrow"]');
+    arrows[0].classList.remove('pressed');
+  } else if (keyPressed === 'ArrowDown') {
+    const arrows = document.querySelectorAll('[data-name="arrow"]');
+    arrows[2].classList.remove('pressed');
   }
 });
