@@ -272,6 +272,8 @@ document.addEventListener('keydown', (event) => {
     }
     keyboard.dataset.shifted = 'true';
     shiftAllKeys(lang);
+  } else if (event.ctrlKey && event.altKey) {
+    switchLang();
   } else if (keyPressed === 'Control') {
     if (event.location === KeyboardEvent.DOM_KEY_LOCATION_LEFT) {
       const pressedCtrl = controlKeys[0];
@@ -326,8 +328,6 @@ document.addEventListener('keydown', (event) => {
     const arrows = document.querySelectorAll('[data-name="arrow"]');
     arrows[2].classList.add('pressed');
     textArea.innerHTML += '▼';
-  } else if (event.ctrlKey && event.altKey) {
-    switchLang();
   }
 });
 document.addEventListener('keyup', (event) => {
