@@ -149,6 +149,9 @@ shiftKeys[1].dataset.side = 'right';
 const controlKeys = document.querySelectorAll('[data-name="ctrl"]');
 controlKeys[0].dataset.side = 'left';
 controlKeys[1].dataset.side = 'right';
+const altKeys = document.querySelectorAll('[data-name="alt"]');
+controlKeys[0].dataset.side = 'left';
+controlKeys[1].dataset.side = 'right';
 shiftKeys.forEach((key) => {
   key.addEventListener('mousedown', () => {
     const { lang } = keyboard.dataset;
@@ -230,6 +233,7 @@ arrowKeys.forEach((key) => {
 });
 
 document.addEventListener('keydown', (event) => {
+  event.preventDefault();
   const keyPressed = event.key;
   let index;
   if (keyboard.dataset.shifted === 'false') {
@@ -268,6 +272,22 @@ document.addEventListener('keydown', (event) => {
     }
     keyboard.dataset.shifted = 'true';
     shiftAllKeys(lang);
+  } else if (keyPressed === 'Control') {
+    if (event.location === KeyboardEvent.DOM_KEY_LOCATION_LEFT) {
+      const pressedCtrl = controlKeys[0];
+      pressedCtrl.classList.add('pressed');
+    } else {
+      const pressedCtrl = controlKeys[1];
+      pressedCtrl.classList.add('pressed');
+    }
+  } else if (keyPressed === 'Alt') {
+    if (event.location === KeyboardEvent.DOM_KEY_LOCATION_LEFT) {
+      const pressedCtrl = altKeys[0];
+      pressedCtrl.classList.add('pressed');
+    } else {
+      const pressedCtrl = altKeys[1];
+      pressedCtrl.classList.add('pressed');
+    }
   } else if (keyPressed === 'Tab') {
     event.preventDefault();
     const tab = document.querySelector('[data-name="tab"]');
@@ -329,6 +349,22 @@ document.addEventListener('keyup', (event) => {
     }
     keyboard.dataset.shifted = 'false';
     unshiftAllKeys(lang);
+  } else if (keyPressed === 'Control') {
+    if (event.location === KeyboardEvent.DOM_KEY_LOCATION_LEFT) {
+      const pressedCtrl = controlKeys[0];
+      pressedCtrl.classList.remove('pressed');
+    } else {
+      const pressedCtrl = controlKeys[1];
+      pressedCtrl.classList.remove('pressed');
+    }
+  } else if (keyPressed === 'Alt') {
+    if (event.location === KeyboardEvent.DOM_KEY_LOCATION_LEFT) {
+      const pressedCtrl = altKeys[0];
+      pressedCtrl.classList.remove('pressed');
+    } else {
+      const pressedCtrl = altKeys[1];
+      pressedCtrl.classList.remove('pressed');
+    }
   } else if (keyPressed === 'Tab') {
     const tab = document.querySelector('[data-name="tab"]');
     tab.classList.remove('pressed');
