@@ -103,7 +103,12 @@ body {
 	resize: none;
 	font-size: 20px;
 }
-
+.subtext {
+	color: black;
+	font-size: 20px;
+	text-align: center;
+	margin-top: 40px;
+}
 .keyboard {
 	margin-top: 40px;
 	width: 100%;

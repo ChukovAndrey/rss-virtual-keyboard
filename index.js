@@ -78,7 +78,10 @@ for (let i = 0; i <= 62; i += 1) {
   }
   keyboard.append(button);
 }
-container.append(text, keyboard);
+const subText = document.createElement('div');
+subText.classList.add('subtext');
+subText.innerText = 'Use Ctrl + Alt to switch language';
+container.append(text, keyboard, subText);
 body.append(container);
 
 const shiftableKeys = document.querySelectorAll('[data-name="shiftable"]');
